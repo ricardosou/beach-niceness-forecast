@@ -19,7 +19,7 @@ export const WeatherChart = ({ data }: WeatherChartProps) => {
   };
 
   return (
-    <div className="w-full h-96">
+    <div className="w-full h-96 lg:h-[500px]">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={data}
@@ -30,38 +30,44 @@ export const WeatherChart = ({ data }: WeatherChartProps) => {
             bottom: 60,
           }}
         >
-          <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
+          <CartesianGrid strokeDasharray="1 1" stroke="#f1f5f9" strokeWidth={1} />
           <XAxis 
             dataKey="formattedTime" 
             angle={-45}
             textAnchor="end"
             height={80}
             fontSize={12}
-            stroke="#6b7280"
+            stroke="#64748b"
+            fontFamily="system-ui"
+            fontWeight={300}
           />
           <YAxis 
             domain={[0, 1]}
             tickFormatter={formatYAxis}
             fontSize={12}
-            stroke="#6b7280"
+            stroke="#64748b"
+            fontFamily="system-ui"
+            fontWeight={300}
           />
           <Tooltip 
             formatter={formatTooltip}
-            labelStyle={{ color: '#374151' }}
+            labelStyle={{ color: '#1e293b', fontWeight: 400 }}
             contentStyle={{ 
               backgroundColor: 'white', 
-              border: '1px solid #d1d5db',
-              borderRadius: '8px',
-              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+              border: '1px solid #e2e8f0',
+              borderRadius: '12px',
+              boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+              fontFamily: 'system-ui',
+              fontWeight: 300
             }}
           />
           <Line 
             type="monotone" 
             dataKey="niceness" 
-            stroke="#2563eb" 
+            stroke="#0f172a" 
             strokeWidth={3}
-            dot={{ fill: '#2563eb', strokeWidth: 2, r: 4 }}
-            activeDot={{ r: 6, stroke: '#2563eb', strokeWidth: 2 }}
+            dot={{ fill: '#0f172a', strokeWidth: 0, r: 5 }}
+            activeDot={{ r: 7, stroke: '#0f172a', strokeWidth: 2, fill: 'white' }}
           />
         </LineChart>
       </ResponsiveContainer>
