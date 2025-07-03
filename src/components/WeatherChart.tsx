@@ -25,10 +25,10 @@ export const WeatherChart = ({ data, lineColor = '#0f172a' }: WeatherChartProps)
         <LineChart
           data={data}
           margin={{
-            top: 20,
-            right: 30,
-            left: 20,
-            bottom: 60,
+            top: 10,
+            right: 10,
+            left: 5,
+            bottom: 40,
           }}
         >
           <CartesianGrid strokeDasharray="1 1" stroke="#f1f5f9" strokeWidth={1} />
@@ -36,7 +36,7 @@ export const WeatherChart = ({ data, lineColor = '#0f172a' }: WeatherChartProps)
             dataKey="formattedTime" 
             angle={-45}
             textAnchor="end"
-            height={80}
+            height={60}
             fontSize={12}
             stroke="#64748b"
             fontFamily="system-ui"
