@@ -77,75 +77,72 @@ const Index = () => {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-6 py-16 lg:py-24">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
-          
-          {/* Sidebar */}
-          <div className="lg:col-span-4 space-y-8">
-            <div>
-              <h3 className="text-2xl font-light text-slate-900 mb-6">Select Location</h3>
-              <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
-                <CardContent className="p-8">
-                  <BeachSelector
-                    beaches={beaches}
-                    selectedBeach={selectedBeach}
-                    onBeachChange={handleBeachChange}
-                  />
-                  <Button 
-                    onClick={handleRefresh} 
-                    className="w-full mt-6 bg-slate-900 hover:bg-slate-800 text-white py-3 text-base font-normal rounded-none"
-                    disabled={loading}
-                  >
-                    {loading ? 'Loading...' : 'Refresh Data'}
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Info Card */}
-            <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-slate-50">
-              <CardContent className="p-8">
-                <h4 className="text-lg font-medium text-slate-900 mb-4">About the Index</h4>
-                <p className="text-slate-600 leading-relaxed font-light">
-                  Our niceness index combines temperature (18-36°C optimal) and wind conditions (0-14 km/h) to create a comprehensive beach comfort score from 0-100%.
-                </p>
-              </CardContent>
-            </Card>
+        {/* Main Chart Area */}
+        <div className="mb-16">
+          <div className="mb-8">
+            <h2 className="text-3xl lg:text-4xl font-light text-slate-900 mb-3">
+              {selectedBeach.name}
+            </h2>
+            <p className="text-lg text-slate-600 font-light">
+              24-hour weather niceness forecast
+            </p>
           </div>
 
-          {/* Main Chart Area */}
-          <div className="lg:col-span-8">
-            <div className="mb-8">
-              <h2 className="text-3xl lg:text-4xl font-light text-slate-900 mb-3">
-                {selectedBeach.name}
-              </h2>
-              <p className="text-lg text-slate-600 font-light">
-                24-hour weather niceness forecast
+          <Card className="border-0 shadow-xl bg-white/90 backdrop-blur">
+            <CardContent className="p-8 lg:p-12">
+              {error && (
+                <div className="text-red-600 text-center p-8 bg-red-50 rounded-lg mb-8 font-light">
+                  {error}
+                </div>
+              )}
+              
+              {loading ? (
+                <div className="text-center py-24">
+                  <div className="animate-spin rounded-full h-12 w-12 border-2 border-slate-200 border-t-slate-900 mx-auto"></div>
+                  <p className="mt-6 text-slate-600 font-light">Loading weather data...</p>
+                </div>
+              ) : weatherData.length > 0 ? (
+                <WeatherChart data={weatherData} />
+              ) : (
+                <div className="text-center py-24 text-slate-500 font-light">
+                  No data available
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* About the Index Section */}
+        <div className="mb-16">
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-slate-50 max-w-4xl mx-auto">
+            <CardContent className="p-8">
+              <h4 className="text-lg font-medium text-slate-900 mb-4">About the Index</h4>
+              <p className="text-slate-600 leading-relaxed font-light">
+                Our niceness index combines temperature (18-36°C optimal) and wind conditions (0-14 km/h) to create a comprehensive beach comfort score from 0-100%.
               </p>
-            </div>
+            </CardContent>
+          </Card>
+        </div>
 
-            <Card className="border-0 shadow-xl bg-white/90 backdrop-blur">
-              <CardContent className="p-8 lg:p-12">
-                {error && (
-                  <div className="text-red-600 text-center p-8 bg-red-50 rounded-lg mb-8 font-light">
-                    {error}
-                  </div>
-                )}
-                
-                {loading ? (
-                  <div className="text-center py-24">
-                    <div className="animate-spin rounded-full h-12 w-12 border-2 border-slate-200 border-t-slate-900 mx-auto"></div>
-                    <p className="mt-6 text-slate-600 font-light">Loading weather data...</p>
-                  </div>
-                ) : weatherData.length > 0 ? (
-                  <WeatherChart data={weatherData} />
-                ) : (
-                  <div className="text-center py-24 text-slate-500 font-light">
-                    No data available
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
+        {/* Select Location Section */}
+        <div className="max-w-4xl mx-auto">
+          <h3 className="text-2xl font-light text-slate-900 mb-6 text-center">Select Location</h3>
+          <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
+            <CardContent className="p-8">
+              <BeachSelector
+                beaches={beaches}
+                selectedBeach={selectedBeach}
+                onBeachChange={handleBeachChange}
+              />
+              <Button 
+                onClick={handleRefresh} 
+                className="w-full mt-6 bg-slate-900 hover:bg-slate-800 text-white py-3 text-base font-normal rounded-none"
+                disabled={loading}
+              >
+                {loading ? 'Loading...' : 'Refresh Data'}
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </div>
 
