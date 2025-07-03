@@ -16,11 +16,29 @@ const beaches: Beach[] = [
   { name: 'Praia Angeiras', coordinates: { lat: '41.267244', lon: '-8.727593' } }
 ];
 
+const colors = [
+  '#0f172a', // slate-900 (original)
+  '#dc2626', // red-600
+  '#059669', // emerald-600
+  '#7c3aed', // violet-600
+  '#ea580c', // orange-600
+  '#0284c7', // sky-600
+  '#be185d', // pink-600
+  '#4338ca', // indigo-600
+];
+
 const Index = () => {
   const [selectedBeach, setSelectedBeach] = useState<Beach>(beaches[3]); // Default to Praia Pedras do corgo
   const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [lineColor, setLineColor] = useState<string>('#0f172a');
+
+  useEffect(() => {
+    // Generate random color on component mount
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    setLineColor(randomColor);
+  }, []);
 
   const loadWeatherData = async (beach: Beach) => {
     setLoading(true);
@@ -62,13 +80,13 @@ const Index = () => {
           }}></div>
         </div>
         
-        <div className="relative max-w-7xl mx-auto px-6 py-16 lg:py-20">
+        <div className="relative max-w-7xl mx-auto px-6 py-12 lg:py-16">
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-5xl lg:text-7xl font-light text-slate-900 mb-6 tracking-tight">
+            <h1 className="text-4xl lg:text-6xl font-light text-slate-900 mb-4 tracking-tight">
               Beach
               <span className="block font-extralight text-slate-600">Weather Index</span>
             </h1>
-            <p className="text-xl lg:text-2xl text-slate-600 font-light leading-relaxed max-w-2xl mx-auto">
+            <p className="text-lg lg:text-xl text-slate-600 font-light leading-relaxed max-w-2xl mx-auto">
               Discover the perfect coastal conditions with our intelligent niceness algorithm that combines temperature and wind data for optimal beach experiences.
             </p>
           </div>
@@ -102,7 +120,7 @@ const Index = () => {
                   <p className="mt-6 text-slate-600 font-light">Loading weather data...</p>
                 </div>
               ) : weatherData.length > 0 ? (
-                <WeatherChart data={weatherData} />
+                <WeatherChart data={weatherData} lineColor={lineColor} />
               ) : (
                 <div className="text-center py-24 text-slate-500 font-light">
                   No data available

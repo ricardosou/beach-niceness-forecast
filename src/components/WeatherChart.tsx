@@ -4,9 +4,10 @@ import { WeatherData } from '@/types/weather';
 
 interface WeatherChartProps {
   data: WeatherData[];
+  lineColor?: string;
 }
 
-export const WeatherChart = ({ data }: WeatherChartProps) => {
+export const WeatherChart = ({ data, lineColor = '#0f172a' }: WeatherChartProps) => {
   const formatTooltip = (value: number, name: string) => {
     if (name === 'niceness') {
       return [`${(value * 100).toFixed(1)}%`, 'Niceness Index'];
@@ -64,10 +65,10 @@ export const WeatherChart = ({ data }: WeatherChartProps) => {
           <Line 
             type="monotone" 
             dataKey="niceness" 
-            stroke="#0f172a" 
+            stroke={lineColor} 
             strokeWidth={3}
-            dot={{ fill: '#0f172a', strokeWidth: 0, r: 5 }}
-            activeDot={{ r: 7, stroke: '#0f172a', strokeWidth: 2, fill: 'white' }}
+            dot={{ fill: lineColor, strokeWidth: 0, r: 5 }}
+            activeDot={{ r: 7, stroke: lineColor, strokeWidth: 2, fill: 'white' }}
           />
         </LineChart>
       </ResponsiveContainer>
