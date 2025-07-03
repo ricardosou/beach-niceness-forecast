@@ -62,9 +62,9 @@ const Index = () => {
           }}></div>
         </div>
         
-        <div className="relative max-w-7xl mx-auto px-6 py-24 lg:py-32">
+        <div className="relative max-w-7xl mx-auto px-6 py-16 lg:py-20">
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-5xl lg:text-7xl font-light text-slate-900 mb-8 tracking-tight">
+            <h1 className="text-5xl lg:text-7xl font-light text-slate-900 mb-6 tracking-tight">
               Beach
               <span className="block font-extralight text-slate-600">Weather Index</span>
             </h1>
