@@ -106,8 +106,8 @@ const Index = () => {
             </p>
           </div>
 
-          <Card className="border-0 shadow-xl bg-white/90 backdrop-blur">
-            <CardContent className="p-4 lg:p-6">
+          <Card className="border-0 shadow-xl bg-white/90 backdrop-blur w-full">
+            <CardContent className="p-0">
               {error && (
                 <div className="text-red-600 text-center p-8 bg-red-50 rounded-lg mb-8 font-light">
                   {error}
