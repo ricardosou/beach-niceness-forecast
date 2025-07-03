@@ -40,12 +40,20 @@ export const fetchWeatherData = async (lat: string, lon: string): Promise<OpenMe
 
 export const calculateNicenessIndex = (weatherData: OpenMeteoResponse): WeatherData[] => {
   const result: WeatherData[] = [];
+  const now = new Date();
   
   // Only process the next 24 hours
   const hoursToProcess = Math.min(24, weatherData.hourly.time.length);
   
   for (let i = 0; i < hoursToProcess; i++) {
     const time = weatherData.hourly.time[i];
+    const timeDate = new Date(time);
+    
+    // Skip past data - only include current hour and future hours
+    if (timeDate < now) {
+      continue;
+    }
+    
     const temp = weatherData.hourly.temperature_2m[i];
     const wind = weatherData.hourly.wind_speed_10m[i];
     
