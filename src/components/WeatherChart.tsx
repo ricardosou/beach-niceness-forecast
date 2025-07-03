@@ -27,7 +27,7 @@ export const WeatherChart = ({ data, lineColor = '#0f172a' }: WeatherChartProps)
           margin={{
             top: 10,
             right: 10,
-            left: 0,
+            left: 10,
             bottom: 40,
           }}
         >
