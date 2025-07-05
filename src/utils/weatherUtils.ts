@@ -58,7 +58,7 @@ export const calculateNicenessIndex = (weatherData: OpenMeteoResponse): WeatherD
     
     // Calculate wind rate (same logic as Python)
     const hourlyWindRate = (wind >= WIND_MIN_THRESHOLD && wind <= WIND_MAX_THRESHOLD) 
-      ? 1 - ((wind - WIND_MIN_THRESHOLD) / WIND_MID_THRESHOLD)
+      ? 2 - ((wind - WIND_MIN_THRESHOLD) / WIND_MID_THRESHOLD)
       : 0;
     
     // Calculate temperature rate (same logic as Python)
