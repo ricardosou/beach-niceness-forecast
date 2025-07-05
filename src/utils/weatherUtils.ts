@@ -1,4 +1,3 @@
-
 import { WeatherData } from '@/types/weather';
 
 // Weather thresholds (same as Python code)
@@ -7,7 +6,7 @@ const WIND_MAX_THRESHOLD = 14;
 const WIND_MID_THRESHOLD = (WIND_MAX_THRESHOLD - WIND_MIN_THRESHOLD) / 2;
 const WIND_RATIO = 0.7;
 
-const TEMP_MIN_THRESHOLD = 18;
+const TEMP_MIN_THRESHOLD = 20;
 const TEMP_MAX_THRESHOLD = 36;
 const TEMP_MID_THRESHOLD = (TEMP_MAX_THRESHOLD - TEMP_MIN_THRESHOLD) / 2;
 const TEMP_RATIO = 0.3;
