@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { WeatherChart } from "@/components/WeatherChart";
 import { BeachSelector } from "@/components/BeachSelector";
 import { fetchWeatherData, calculateNicenessIndex } from "@/utils/weatherUtils";
@@ -30,6 +31,7 @@ const colors = [
 const Index = () => {
   const [selectedBeach, setSelectedBeach] = useState<Beach>(beaches[3]); // Default to Praia Pedras do corgo
   const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
+  const [rawWeatherData, setRawWeatherData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lineColor, setLineColor] = useState<string>('#0f172a');
@@ -46,8 +48,9 @@ const Index = () => {
     
     try {
       console.log(`Fetching weather data for ${beach.name}`, beach.coordinates);
-      const rawWeatherData = await fetchWeatherData(beach.coordinates.lat, beach.coordinates.lon);
-      const processedData = calculateNicenessIndex(rawWeatherData);
+      const rawWeatherResponse = await fetchWeatherData(beach.coordinates.lat, beach.coordinates.lon);
+      setRawWeatherData(rawWeatherResponse);
+      const processedData = calculateNicenessIndex(rawWeatherResponse);
       setWeatherData(processedData);
     } catch (err) {
       console.error('Error fetching weather data:', err);
@@ -94,10 +97,10 @@ const Index = () => {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 py-16 lg:py-24">
+      <div className="max-w-7xl mx-auto py-16 lg:py-24">
         {/* Main Chart Area */}
-        <div className="mb-16">
-          <div className="mb-8">
+        <div className="mb-16 px-0">
+          <div className="mb-8 px-6">
             <h2 className="text-3xl lg:text-4xl font-light text-slate-900 mb-3">
               {selectedBeach.name}
             </h2>
@@ -106,7 +109,7 @@ const Index = () => {
             </p>
           </div>
 
-          <Card className="border-0 shadow-xl bg-white/90 backdrop-blur w-full">
+          <Card className="border-0 shadow-xl bg-white/90 backdrop-blur w-full mx-0 rounded-none">
             <CardContent className="p-0">
               {error && (
                 <div className="text-red-600 text-center p-8 bg-red-50 rounded-lg mb-8 font-light">
@@ -131,19 +134,19 @@ const Index = () => {
         </div>
 
         {/* About the Index Section */}
-        <div className="mb-16">
+        <div className="mb-16 px-6">
           <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-slate-50 max-w-4xl mx-auto">
             <CardContent className="p-8">
               <h4 className="text-lg font-medium text-slate-900 mb-4">About the Index</h4>
               <p className="text-slate-600 leading-relaxed font-light">
-                Our niceness index combines temperature (18-36°C optimal) and wind conditions (0-14 km/h) to create a comprehensive beach comfort score from 0-100%.
+                Our niceness index combines temperature (20-36°C optimal) and wind conditions (0-14 km/h) to create a comprehensive beach comfort score from 0-100%.
               </p>
             </CardContent>
           </Card>
         </div>
 
         {/* Select Location Section */}
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto px-6">
           <h3 className="text-2xl font-light text-slate-900 mb-6 text-center">Select Location</h3>
           <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
             <CardContent className="p-8">
@@ -159,6 +162,20 @@ const Index = () => {
               >
                 {loading ? 'Loading...' : 'Refresh Data'}
               </Button>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Raw Weather Data Section */}
+        <div className="max-w-7xl mx-auto px-6 mt-16">
+          <Card className="border-0 shadow-lg bg-white">
+            <CardContent className="p-8">
+              <h4 className="text-lg font-medium text-slate-900 mb-4">Raw Weather Data (JSON Response)</h4>
+              <Textarea
+                value={rawWeatherData ? JSON.stringify(rawWeatherData, null, 2) : 'No data available'}
+                readOnly
+                className="w-full h-64 font-mono text-sm bg-slate-50 border border-slate-200"
+              />
             </CardContent>
           </Card>
         </div>
