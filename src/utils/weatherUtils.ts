@@ -8,7 +8,7 @@ const WIND_RATIO = 0.7;
 
 const TEMP_MIN_THRESHOLD = 20;
 const TEMP_MAX_THRESHOLD = 36;
-const TEMP_MID_THRESHOLD = (TEMP_MAX_THRESHOLD - TEMP_MIN_THRESHOLD) / 2;
+const TEMP_MID_THRESHOLD = (TEMP_MAX_THRESHOLD - TEMP_MIN_THRESHOLD);
 const TEMP_RATIO = 0.3;
 
 interface OpenMeteoResponse {
@@ -58,7 +58,7 @@ export const calculateNicenessIndex = (weatherData: OpenMeteoResponse): WeatherD
     
     // Calculate wind rate (same logic as Python)
     const hourlyWindRate = (wind >= WIND_MIN_THRESHOLD && wind <= WIND_MAX_THRESHOLD) 
-      ? 2 - ((wind - WIND_MIN_THRESHOLD) / WIND_MID_THRESHOLD)
+      ? 1 - ((wind - WIND_MIN_THRESHOLD) / WIND_MAX_THRESHOLD)
       : 0;
     
     // Calculate temperature rate (same logic as Python)
