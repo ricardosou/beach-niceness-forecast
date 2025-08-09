@@ -8,17 +8,22 @@ interface WeatherChartProps {
 }
 
 export const WeatherChart = ({ data, lineColor = '#0f172a' }: WeatherChartProps) => {
-  const formatTooltip = (value: number, name: string) => {
-    if (name === 'niceness') {
-      return [`${(value * 100).toFixed(1)}%`, 'Niceness Index'];
+  const formatYAxis = (value: number) => `${(value * 100).toFixed(0)}%`;
+
+  const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: any[]; label?: string }) => {
+    if (active && payload && payload.length) {
+      const point: WeatherData = payload[0].payload;
+      return (
+        <div style={{ backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '12px', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)', fontFamily: 'system-ui', fontWeight: 300, padding: '10px 12px' }}>
+          <div style={{ color: '#1e293b', fontWeight: 500, marginBottom: 6 }}>{label}</div>
+          <div>Niceness: {(point.niceness * 100).toFixed(1)}%</div>
+          <div>Temp: {point.temperature.toFixed(1)}°C</div>
+          <div>Wind: {point.windSpeed.toFixed(1)} km/h</div>
+        </div>
+      );
     }
-    return [value, name];
+    return null;
   };
-
-  const formatYAxis = (value: number) => {
-    return `${(value * 100).toFixed(0)}%`;
-  };
-
   return (
     <div className="w-full h-96 lg:h-[500px]">
       <ResponsiveContainer width="100%" height="100%">
@@ -50,18 +55,7 @@ export const WeatherChart = ({ data, lineColor = '#0f172a' }: WeatherChartProps)
             fontFamily="system-ui"
             fontWeight={300}
           />
-          <Tooltip 
-            formatter={formatTooltip}
-            labelStyle={{ color: '#1e293b', fontWeight: 400 }}
-            contentStyle={{ 
-              backgroundColor: 'white', 
-              border: '1px solid #e2e8f0',
-              borderRadius: '12px',
-              boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-              fontFamily: 'system-ui',
-              fontWeight: 300
-            }}
-          />
+          <Tooltip content={<CustomTooltip />} />
           <Line 
             type="monotone" 
             dataKey="niceness" 
