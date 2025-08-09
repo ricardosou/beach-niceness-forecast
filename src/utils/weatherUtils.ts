@@ -40,35 +40,34 @@ export const fetchWeatherData = async (lat: string, lon: string): Promise<OpenMe
 export const calculateNicenessIndex = (weatherData: OpenMeteoResponse): WeatherData[] => {
   const result: WeatherData[] = [];
   const now = new Date();
-  
-  // Only process the next 24 hours
-  const hoursToProcess = Math.min(24, weatherData.hourly.time.length);
-  
-  for (let i = 0; i < hoursToProcess; i++) {
-    const time = weatherData.hourly.time[i];
-    const timeDate = new Date(time);
-    
-    // Skip past data - only include current hour and future hours
-    if (timeDate < now) {
-      continue;
-    }
-    
+
+  // Always process the next 24 hours starting from the current hour
+  const times = weatherData.hourly.time;
+  const startIndex = times.findIndex((t) => new Date(t) >= now);
+  if (startIndex === -1) {
+    console.warn('No future hours found in weather data.');
+    return result;
+  }
+  const endIndex = Math.min(startIndex + 24, times.length);
+
+  for (let i = startIndex; i < endIndex; i++) {
+    const time = times[i];
     const temp = weatherData.hourly.temperature_2m[i];
     const wind = weatherData.hourly.wind_speed_10m[i];
-    
+
     // Calculate wind rate (same logic as Python)
-    const hourlyWindRate = (wind >= WIND_MIN_THRESHOLD && wind <= WIND_MAX_THRESHOLD) 
+    const hourlyWindRate = (wind >= WIND_MIN_THRESHOLD && wind <= WIND_MAX_THRESHOLD)
       ? 1 - ((wind - WIND_MIN_THRESHOLD) / WIND_MAX_THRESHOLD)
       : 0;
-    
+
     // Calculate temperature rate (same logic as Python)
     const hourlyTempRate = (temp >= TEMP_MIN_THRESHOLD && temp <= TEMP_MAX_THRESHOLD)
       ? ((temp - TEMP_MIN_THRESHOLD) / TEMP_MID_THRESHOLD)
       : 0;
-    
+
     // Calculate niceness index
     const nicenessIndex = Math.max(0, hourlyWindRate * WIND_RATIO + hourlyTempRate * TEMP_RATIO);
-    
+
     // Format time for display
     const dateObj = new Date(time);
     const formattedTime = dateObj.toLocaleString('pt-PT', {
@@ -77,7 +76,7 @@ export const calculateNicenessIndex = (weatherData: OpenMeteoResponse): WeatherD
       hour: '2-digit',
       minute: '2-digit'
     });
-    
+
     result.push({
       time,
       formattedTime,
@@ -88,7 +87,7 @@ export const calculateNicenessIndex = (weatherData: OpenMeteoResponse): WeatherD
       niceness: nicenessIndex
     });
   }
-  
+
   console.log('Processed weather data:', result);
   return result;
 };
