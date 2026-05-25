@@ -24,7 +24,7 @@ jobs:
           secure: true
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
-          to: ${{ secrets.MAIL_TO }}
+          to: ${{ secrets.MAIL_TO || secrets.MAIL_USERNAME }}
           from: Beach Weather Alert <${{ secrets.MAIL_USERNAME }}>
           subject: "🏖️ Beach day! Good conditions at Praia Pedras do Corgo"
           body: ${{ steps.check.outputs.email_body }}
