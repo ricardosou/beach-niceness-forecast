@@ -3,22 +3,46 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>beach-niceness-forecast</title>
-    <meta name="description" content="Lovable Generated Project" />
-    <meta name="author" content="Lovable" />
-
-    <meta property="og:title" content="beach-niceness-forecast" />
-    <meta property="og:description" content="Lovable Generated Project" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    <title>Beach Weather Index</title>
+    <meta name="description" content="Beach weather niceness forecast for Portuguese beaches" />
+    <link rel="stylesheet" href="style.css" />
   </head>
-
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <header class="hero">
+      <h1>Beach <span>Weather Index</span></h1>
+      <p>Discover the perfect coastal conditions with our intelligent niceness algorithm that combines temperature and wind data for optimal beach experiences.</p>
+    </header>
+
+    <main>
+      <section class="chart-section">
+        <h2 id="beach-name"></h2>
+        <p>24-hour weather niceness forecast</p>
+        <div class="chart-card">
+          <div id="chart-container"></div>
+        </div>
+      </section>
+
+      <section class="about">
+        <div class="about-card">
+          <h4>About the Index</h4>
+          <p>Our niceness index combines temperature (20–36°C optimal) and wind conditions (0–14 km/h) to create a comprehensive beach comfort score from 0–100%.</p>
+        </div>
+      </section>
+
+      <section class="selector">
+        <h3>Select Location</h3>
+        <div class="selector-card">
+          <div id="beach-buttons"></div>
+          <button id="refresh-btn">Refresh Data</button>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>Powered by Open-Meteo weather data</p>
+    </footer>
+
+    <div id="tooltip" class="tooltip hidden"></div>
+    <script src="app.js"></script>
   </body>
 </html>
