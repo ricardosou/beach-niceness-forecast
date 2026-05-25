@@ -5,41 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Beach Weather Index</title>
     <meta name="description" content="Beach weather niceness forecast for Portuguese beaches" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <header class="hero">
-      <h1>Beach <span>Weather Index</span></h1>
-      <p>Discover the perfect coastal conditions with our intelligent niceness algorithm that combines temperature and wind data for optimal beach experiences.</p>
+      <div class="hero-inner">
+        <div class="hero-tag">🌊 Portuguese Coast</div>
+        <h1>Beach Weather<br /><span>Index</span></h1>
+        <p>Real-time niceness scores combining temperature and wind data — so you know exactly when to hit the sand.</p>
+      </div>
     </header>
 
     <main>
       <section class="chart-section">
-        <h2 id="beach-name"></h2>
-        <p>24-hour weather niceness forecast</p>
+        <div class="chart-header">
+          <div>
+            <h2 id="beach-name"></h2>
+            <p class="chart-subtitle">Next 24 hours</p>
+          </div>
+          <div id="stats-row" class="stats-row"></div>
+        </div>
+
         <div class="chart-card">
           <div id="chart-container"></div>
         </div>
       </section>
 
-      <section class="about">
-        <div class="about-card">
-          <h4>About the Index</h4>
-          <p>Our niceness index combines temperature (20–36°C optimal) and wind conditions (0–14 km/h) to create a comprehensive beach comfort score from 0–100%.</p>
-        </div>
-      </section>
+      <div class="bottom-grid">
+        <section class="about">
+          <div class="about-card">
+            <div class="about-icon">📐</div>
+            <h4>How it's calculated</h4>
+            <p>Temperature (20–36°C optimal) contributes 30% and wind speed (0–14 km/h optimal) contributes 70% to the final comfort score from 0–100%.</p>
+          </div>
+        </section>
 
-      <section class="selector">
-        <h3>Select Location</h3>
-        <div class="selector-card">
+        <section class="selector">
+          <h3>Select Location</h3>
           <div id="beach-buttons"></div>
-          <button id="refresh-btn">Refresh Data</button>
-        </div>
-      </section>
+          <button id="refresh-btn">
+            <span id="refresh-label">↻ Refresh Data</span>
+          </button>
+        </section>
+      </div>
     </main>
 
     <footer>
-      <p>Powered by Open-Meteo weather data</p>
+      <p>Powered by <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> · Built for the Portuguese coast</p>
     </footer>
 
     <div id="tooltip" class="tooltip hidden"></div>

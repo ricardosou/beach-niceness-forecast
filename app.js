@@ -7,7 +7,7 @@ const BEACHES = [
   { name: 'Praia Angeiras', lat: '41.267244', lon: '-8.727593' },
 ];
 
-const LINE_COLORS = ['#0f172a','#dc2626','#059669','#7c3aed','#ea580c','#0284c7','#be185d','#4338ca'];
+const LINE_COLORS = ['#0ea5e9','#6366f1','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#f97316'];
 
 let selectedBeach = BEACHES[3];
 const lineColor = LINE_COLORS[Math.floor(Math.random() * LINE_COLORS.length)];
@@ -45,10 +45,37 @@ function processData(raw) {
   return result;
 }
 
+function updateStats(data) {
+  const statsRow = document.getElementById('stats-row');
+  if (!data.length) { statsRow.innerHTML = ''; return; }
+
+  const current = data[0];
+  const maxNiceness = Math.max(...data.map(d => d.niceness));
+
+  statsRow.innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">Now</div>
+      <div class="stat-value">${(current.niceness * 100).toFixed(0)}%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Best</div>
+      <div class="stat-value">${(maxNiceness * 100).toFixed(0)}%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Temp</div>
+      <div class="stat-value">${current.temperature.toFixed(0)}°</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Wind</div>
+      <div class="stat-value">${current.windSpeed.toFixed(0)}<span style="font-size:0.75rem;font-weight:400;color:#64748b"> km/h</span></div>
+    </div>
+  `;
+}
+
 function renderChart(data) {
   const container = document.getElementById('chart-container');
   const W = 800, H = 400;
-  const pad = { top: 20, right: 20, bottom: 70, left: 55 };
+  const pad = { top: 24, right: 24, bottom: 72, left: 52 };
   const cW = W - pad.left - pad.right;
   const cH = H - pad.top - pad.bottom;
   const n = data.length;
@@ -57,36 +84,45 @@ function renderChart(data) {
   const yScale = v => pad.top + (1 - v) * cH;
 
   const gridLines = [0, 0.25, 0.5, 0.75, 1].map(v => `
-    <line x1="${pad.left}" y1="${yScale(v)}" x2="${pad.left + cW}" y2="${yScale(v)}" stroke="#f1f5f9" stroke-width="1"/>
-    <text x="${pad.left - 8}" y="${yScale(v) + 4}" text-anchor="end" font-size="11" fill="#64748b">${(v * 100).toFixed(0)}%</text>
+    <line x1="${pad.left}" y1="${yScale(v)}" x2="${pad.left + cW}" y2="${yScale(v)}" stroke="#f1f5f9" stroke-width="1.5"/>
+    <text x="${pad.left - 10}" y="${yScale(v) + 4}" text-anchor="end" font-size="11" fill="#94a3b8" font-family="Inter,system-ui,sans-serif">${(v * 100).toFixed(0)}%</text>
   `).join('');
 
   const xLabels = data.map((d, i) => {
     if (i % 4 !== 0) return '';
     const x = xScale(i);
-    return `<text x="${x}" y="${pad.top + cH + 15}" text-anchor="end" transform="rotate(-45,${x},${pad.top + cH + 15})" font-size="11" fill="#64748b">${d.label}</text>`;
+    return `<text x="${x}" y="${pad.top + cH + 16}" text-anchor="end" transform="rotate(-40,${x},${pad.top + cH + 16})" font-size="11" fill="#94a3b8" font-family="Inter,system-ui,sans-serif">${d.label}</text>`;
   }).join('');
 
-  const pathD = `M ${data.map((d, i) => `${xScale(i)},${yScale(d.niceness)}`).join(' L ')}`;
+  const linePts = data.map((d, i) => `${xScale(i)},${yScale(d.niceness)}`);
+  const pathD = `M ${linePts.join(' L ')}`;
+  const fillD = `M ${xScale(0)},${yScale(0)} L ${linePts.join(' L ')} L ${xScale(n - 1)},${yScale(0)} Z`;
 
   const dots = data.map((d, i) => `
-    <circle cx="${xScale(i)}" cy="${yScale(d.niceness)}" r="4" fill="${lineColor}"/>
+    <circle cx="${xScale(i)}" cy="${yScale(d.niceness)}" r="3.5" fill="${lineColor}" opacity="0.7"/>
   `).join('');
 
   const hoverTargets = data.map((d, i) => {
     const x = xScale(i);
-    return `<line x1="${x}" y1="${pad.top}" x2="${x}" y2="${pad.top + cH}" stroke="transparent" stroke-width="20" data-idx="${i}" class="hover-target" style="cursor:crosshair"/>`;
+    return `<line x1="${x}" y1="${pad.top}" x2="${x}" y2="${pad.top + cH}" stroke="transparent" stroke-width="22" data-idx="${i}" class="hover-target" style="cursor:crosshair"/>`;
   }).join('');
 
   container.innerHTML = `
     <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:100%;overflow:visible">
+      <defs>
+        <linearGradient id="fill-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="${lineColor}" stop-opacity="0.18"/>
+          <stop offset="100%" stop-color="${lineColor}" stop-opacity="0.01"/>
+        </linearGradient>
+      </defs>
       ${gridLines}
-      <path d="${pathD}" stroke="${lineColor}" stroke-width="3" fill="none"/>
+      <path d="${fillD}" fill="url(#fill-grad)"/>
+      <path d="${pathD}" stroke="${lineColor}" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
       ${dots}
       ${xLabels}
       ${hoverTargets}
-      <line id="hover-line" x1="0" y1="${pad.top}" x2="0" y2="${pad.top + cH}" stroke="${lineColor}" stroke-width="1" stroke-dasharray="4" opacity="0" pointer-events="none"/>
-      <circle id="hover-dot" r="7" fill="white" stroke="${lineColor}" stroke-width="2" opacity="0" pointer-events="none"/>
+      <line id="hover-line" x1="0" y1="${pad.top}" x2="0" y2="${pad.top + cH}" stroke="${lineColor}" stroke-width="1" stroke-dasharray="3 3" opacity="0" pointer-events="none"/>
+      <circle id="hover-dot" r="6" fill="white" stroke="${lineColor}" stroke-width="2.5" opacity="0" pointer-events="none"/>
     </svg>
   `;
 
@@ -95,19 +131,20 @@ function renderChart(data) {
   const hoverDot = container.querySelector('#hover-dot');
 
   container.querySelectorAll('.hover-target').forEach(el => {
-    el.addEventListener('mouseenter', e => {
+    el.addEventListener('mouseenter', () => {
       const idx = parseInt(el.dataset.idx);
       const d = data[idx];
       const x = xScale(idx);
       const y = yScale(d.niceness);
 
-      hoverLine.setAttribute('x1', x); hoverLine.setAttribute('x2', x); hoverLine.setAttribute('opacity', '0.4');
+      hoverLine.setAttribute('x1', x); hoverLine.setAttribute('x2', x); hoverLine.setAttribute('opacity', '0.5');
       hoverDot.setAttribute('cx', x); hoverDot.setAttribute('cy', y); hoverDot.setAttribute('opacity', '1');
 
-      tooltip.innerHTML = `<div class="tooltip-time">${d.label}</div>
-        <div>Niceness: ${(d.niceness * 100).toFixed(1)}%</div>
-        <div>Temp: ${d.temperature.toFixed(1)}°C</div>
-        <div>Wind: ${d.windSpeed.toFixed(1)} km/h</div>`;
+      tooltip.innerHTML = `
+        <div class="tooltip-time">${d.label}</div>
+        <div>Niceness &nbsp;<strong>${(d.niceness * 100).toFixed(1)}%</strong></div>
+        <div>Temp &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>${d.temperature.toFixed(1)}°C</strong></div>
+        <div>Wind &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>${d.windSpeed.toFixed(1)} km/h</strong></div>`;
       tooltip.classList.remove('hidden');
     });
 
@@ -126,7 +163,7 @@ function renderChart(data) {
 
 function showLoading() {
   document.getElementById('chart-container').innerHTML = `
-    <div class="loading"><div class="spinner"></div><p>Loading weather data...</p></div>`;
+    <div class="loading"><div class="spinner"></div><p>Loading weather data…</p></div>`;
 }
 
 function showError(msg) {
@@ -137,17 +174,20 @@ async function loadWeather() {
   showLoading();
   document.getElementById('beach-name').textContent = selectedBeach.name;
   const btn = document.getElementById('refresh-btn');
+  const label = document.getElementById('refresh-label');
   btn.disabled = true;
-  btn.textContent = 'Loading...';
+  label.textContent = 'Loading…';
 
   try {
     const raw = await fetchWeather(selectedBeach);
-    renderChart(processData(raw));
+    const data = processData(raw);
+    updateStats(data);
+    renderChart(data);
   } catch {
     showError('Failed to fetch weather data. Please try again.');
   } finally {
     btn.disabled = false;
-    btn.textContent = 'Refresh Data';
+    label.textContent = '↻ Refresh Data';
   }
 }
 
