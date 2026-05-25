@@ -1,0 +1,30 @@
+name: Daily Beach Alert
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # 06:00 UTC = 07:00 Lisbon (WEST, UTC+1)
+  workflow_dispatch:      # manual trigger for testing
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check beach niceness
+        id: check
+        run: node .github/scripts/check-beach.js
+
+      - name: Send email alert
+        if: steps.check.outputs.beach_alert == 'true'
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          to: ${{ secrets.MAIL_TO }}
+          from: Beach Weather Alert <${{ secrets.MAIL_USERNAME }}>
+          subject: "🏖️ Beach day! Good conditions at Praia Pedras do Corgo"
+          body: ${{ steps.check.outputs.email_body }}
