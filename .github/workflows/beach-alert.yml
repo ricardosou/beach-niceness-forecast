@@ -2,7 +2,7 @@ name: Daily Beach Alert
 
 on:
   schedule:
-    - cron: '0 6 * * *'  # 06:00 UTC = 07:00 Lisbon (WEST, UTC+1)
+    - cron: '0 2 * * *'  # 06:00 UTC = 07:00 Lisbon (WEST, UTC+1)
   workflow_dispatch:      # manual trigger for testing
 
 jobs:
